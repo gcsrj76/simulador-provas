@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.plugin.compose")
 }
 
 android {
@@ -32,19 +33,13 @@ android {
         compose = true
     }
 
-    composeOptions {
-        // Versão estável para o Kotlin 1.9.22
-        kotlinCompilerExtensionVersion = "1.5.8"
-    }
-
     compileOptions {
-        // Alterado para 21 para usar todo o potencial do seu Java instalado
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
     
     kotlinOptions {
-        jvmTarget = "21"
+        jvmTarget = "1.8"
     }
 }
 
