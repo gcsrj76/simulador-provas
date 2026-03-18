@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<incidents format="6" by="lint 8.2.2" type="incidents">
+
+    <incident
+        id="HardcodedText"
+        severity="warning"
+        message="Hardcoded string &quot;Simulador de Provas&quot;, should use `@string` resource">
+        <location
+            file="${:app*debug*MAIN*sourceProvider*0*resDir*0}/layout/activity_main.xml"
+            line="17"
+            column="13"
+            startOffset="576"
+            endLine="17"
+            endColumn="47"
+            endOffset="610"/>
+    </incident>
+
+    <incident
+        id="HardcodedText"
+        severity="warning"
+        message="Hardcoded string &quot;Banco de dados interno será usado automaticamente.&quot;, should use `@string` resource">
+        <location
+            file="${:app*debug*MAIN*sourceProvider*0*resDir*0}/layout/activity_main.xml"
+            line="27"
+            column="13"
+            startOffset="933"
+            endLine="27"
+            endColumn="78"
+            endOffset="998"/>
+    </incident>
+
+    <incident
+        id="HardcodedText"
+        severity="warning"
+        message="Hardcoded string &quot;Total de questões: -&quot;, should use `@string` resource">
+        <location
+            file="${:app*debug*MAIN*sourceProvider*0*resDir*0}/layout/activity_main.xml"
+            line="34"
+            column="13"
+            startOffset="1218"
+            endLine="34"
+            endColumn="48"
+            endOffset="1253"/>
+    </incident>
+
+    <incident
+        id="HardcodedText"
+        severity="warning"
+        message="Hardcoded string &quot;Iniciar simulado&quot;, should use `@string` resource">
+        <location
+            file="${:app*debug*MAIN*sourceProvider*0*resDir*0}/layout/activity_main.xml"
+            line="40"
+            column="13"
+            startOffset="1433"
+            endLine="40"
+            endColumn="44"
+            endOffset="1464"/>
+    </incident>
+
+    <incident
+        id="HardcodedText"
+        severity="warning"
+        message="Hardcoded string &quot;Finalizar simulado&quot;, should use `@string` resource">
+        <location
+            file="${:app*debug*MAIN*sourceProvider*0*resDir*0}/layout/activity_main.xml"
+            line="60"
+            column="13"
+            startOffset="2139"
+            endLine="60"
+            endColumn="46"
+            endOffset="2172"/>
+    </incident>
+
+    <incident
+        id="AutoboxingStateCreation"
+        severity="informational"
+        message="Prefer `mutableIntStateOf` instead of `mutableStateOf`">
+        <fix-composite
+            description="Replace with mutableIntStateOf">
+            <fix-replace
+                description="Replace with androidx.compose.runtime.mutableIntStateOf"
+                replacement="androidx.compose.runtime.mutableIntStateOf"
+                shortenNames="true">
+                <range
+                    file="${:app*debug*MAIN*sourceProvider*0*javaDir*0}/com/papito/simuladorprovas/MainActivity.kt"
+                    startOffset="5146"
+                    endOffset="5160"/>
+            </fix-replace>
+        </fix-composite>
+        <location
+            file="${:app*debug*MAIN*sourceProvider*0*javaDir*0}/com/papito/simuladorprovas/MainActivity.kt"
+            line="142"
+            column="32"
+            startOffset="5146"
+            endLine="142"
+            endColumn="46"
+            endOffset="5160"/>
+    </incident>
+
+    <incident
+        id="AutoboxingStateCreation"
+        severity="informational"
+        message="Prefer `mutableIntStateOf` instead of `mutableStateOf`">
+        <fix-composite
+            description="Replace with mutableIntStateOf">
+            <fix-replace
+                description="Replace with androidx.compose.runtime.mutableIntStateOf"
+                replacement="androidx.compose.runtime.mutableIntStateOf"
+                shortenNames="true">
+                <range
+                    file="${:app*debug*MAIN*sourceProvider*0*javaDir*0}/com/papito/simuladorprovas/MainActivity.kt"
+                    startOffset="5514"
+                    endOffset="5528"/>
+            </fix-replace>
+        </fix-composite>
+        <location
+            file="${:app*debug*MAIN*sourceProvider*0*javaDir*0}/com/papito/simuladorprovas/MainActivity.kt"
+            line="154"
+            column="37"
+            startOffset="5514"
+            endLine="154"
+            endColumn="51"
+            endOffset="5528"/>
+    </incident>
+
+    <incident
+        id="AutoboxingStateCreation"
+        severity="informational"
+        message="Prefer `mutableIntStateOf` instead of `mutableStateOf`">
+        <fix-composite
+            description="Replace with mutableIntStateOf">
+            <fix-replace
+                description="Replace with androidx.compose.runtime.mutableIntStateOf"
+                replacement="androidx.compose.runtime.mutableIntStateOf"
+                shortenNames="true">
+                <range
+                    file="${:app*debug*MAIN*sourceProvider*0*javaDir*0}/com/papito/simuladorprovas/MainActivity.kt"
+                    startOffset="5802"
+                    endOffset="5816"/>
+            </fix-replace>
+        </fix-composite>
+        <location
+            file="${:app*debug*MAIN*sourceProvider*0*javaDir*0}/com/papito/simuladorprovas/MainActivity.kt"
+            line="158"
+            column="44"
+            startOffset="5802"
+            endLine="158"
+            endColumn="58"
+            endOffset="5816"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.core:core-ktx than 1.12.0 is available: 1.18.0">
+        <fix-replace
+            description="Change to 1.18.0"
+            family="Update versions"
+            oldString="1.12.0"
+            replacement="1.18.0"/>
+        <location
+            file="${:app*projectDir}/build.gradle.kts"
+            line="53"
+            column="21"
+            startOffset="1293"
+            endLine="53"
+            endColumn="50"
+            endOffset="1322"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.lifecycle:lifecycle-runtime-ktx than 2.7.0 is available: 2.10.0">
+        <fix-replace
+            description="Change to 2.10.0"
+            family="Update versions"
+            oldString="2.7.0"
+            replacement="2.10.0"/>
+        <location
+            file="${:app*projectDir}/build.gradle.kts"
+            line="54"
+            column="21"
+            startOffset="1345"
+            endLine="54"
+            endColumn="67"
+            endOffset="1391"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.activity:activity-compose than 1.8.2 is available: 1.13.0">
+        <fix-replace
+            description="Change to 1.13.0"
+            family="Update versions"
+            oldString="1.8.2"
+            replacement="1.13.0"/>
+        <location
+            file="${:app*projectDir}/build.gradle.kts"
+            line="55"
+            column="21"
+            startOffset="1414"
+            endLine="55"
+            endColumn="61"
+            endOffset="1454"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.sqlite:sqlite-ktx than 2.4.0 is available: 2.6.2">
+        <fix-replace
+            description="Change to 2.6.2"
+            family="Update versions"
+            oldString="2.4.0"
+            replacement="2.6.2"/>
+        <location
+            file="${:app*projectDir}/build.gradle.kts"
+            line="65"
+            column="21"
+            startOffset="1884"
+            endLine="65"
+            endColumn="53"
+            endOffset="1916"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.test.ext:junit than 1.1.5 is available: 1.3.0">
+        <fix-replace
+            description="Change to 1.3.0"
+            family="Update versions"
+            oldString="1.1.5"
+            replacement="1.3.0"/>
+        <location
+            file="${:app*projectDir}/build.gradle.kts"
+            line="69"
+            column="32"
+            startOffset="2010"
+            endLine="69"
+            endColumn="61"
+            endOffset="2039"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.test.espresso:espresso-core than 3.5.1 is available: 3.7.0">
+        <fix-replace
+            description="Change to 3.7.0"
+            family="Update versions"
+            oldString="3.5.1"
+            replacement="3.7.0"/>
+        <location
+            file="${:app*projectDir}/build.gradle.kts"
+            line="70"
+            column="32"
+            startOffset="2073"
+            endLine="70"
+            endColumn="74"
+            endOffset="2115"/>
+    </incident>
+
+</incidents>

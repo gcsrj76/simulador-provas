@@ -1,0 +1,7 @@
+#Tue Mar 17 12:27:37 UTC 2026
+base.0=/home/palinux/projetos/simulador-provas/app/build/intermediates/dex/release/mergeDexRelease/classes.dex
+base.1=/home/palinux/projetos/simulador-provas/app/build/intermediates/dex/release/mergeDexRelease/classes2.dex
+path.0=classes.dex
+path.1=classes2.dex
+renamed.0=classes.dex
+renamed.1=classes2.dex

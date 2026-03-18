@@ -1,0 +1,14 @@
+[
+    {
+        "merged": "com.papito.simuladorprovas.app-merged_res-42:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "com.papito.simuladorprovas.app-main-43:/drawable/ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "/home/palinux/.gradle/daemon/8.5/com.papito.simuladorprovas.app-merged_res-42:/layout_activity_main.xml.flat",
+        "source": "/home/palinux/.gradle/daemon/8.5/com.papito.simuladorprovas.app-main-43:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.papito.simuladorprovas.app-merged_res-42:/drawable_ic_launcher_background.xml.flat",
+        "source": "com.papito.simuladorprovas.app-main-43:/drawable/ic_launcher_background.xml"
+    }
+]
