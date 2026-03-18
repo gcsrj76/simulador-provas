@@ -1,3 +1,0 @@
-com.papito.simuladorprovas.test
-style WhiteBackgroundDialogTheme
-style WhiteBackgroundTheme
