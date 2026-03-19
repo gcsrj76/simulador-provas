@@ -21,7 +21,15 @@ fun ExamSimulatorApp(
     questoes: SnapshotStateList<Question>,
     onFilePickerClick: () -> Unit
 ) {
-    var currentQuestionIndex by remember { mutableStateOf(0) }
+    //var currentQuestionIndex by remember { mutableStateOf(0) }
+    var currentQuestionIndex by remember(questoes) {
+        // Procura o índice da primeira questão que NÃO tem resposta salva
+        val primeiroPendente = questoes.indexOfFirst { it.respostaDada == null }
+
+        // Se encontrar (index != -1), começa nela.
+        // Se todas estiverem respondidas, começa na última (ou na 0, como preferir).
+        mutableIntStateOf(if (primeiroPendente != -1) primeiroPendente else 0)
+    }
 
     // Removida a dependência excessiva do remember para evitar travamento de estado
     val respostasIniciais = questoes.filter { it.respostaDada != null }
@@ -37,75 +45,91 @@ fun ExamSimulatorApp(
     when {
         // --- TELA INICIAL ---
         !showQuestions && !showResult -> {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black),
-                contentAlignment = Alignment.Center
-            ) {
-                Column(
+            Scaffold(
+                containerColor = Color.Black, // Garante o fundo preto em toda a tela
+                bottomBar = {
+                    // O botão de Reset agora fica fixo aqui embaixo
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                            .padding(bottom = 16.dp) // Espaço extra para não colar na barra do sistema
+                    ) {
+                        OutlinedButton(
+                            onClick = {
+                                val dbHelper = DatabaseHelper(context)
+                                dbHelper.limparQuestoes()
+                                questoes.clear()
+                                selectedAnswers = emptyMap()
+                                answeredQuestions = emptySet()
+
+                                android.widget.Toast.makeText(
+                                    context,
+                                    "Base de questões apagada com sucesso!",
+                                    android.widget.Toast.LENGTH_SHORT
+                                ).show()
+                            },
+                            modifier = Modifier.fillMaxWidth().height(56.dp),
+                            shape = RoundedCornerShape(12.dp),
+                            border = BorderStroke(1.5.dp, Color(0xFF009688).copy(alpha = 0.7f)),
+                            colors = ButtonDefaults.outlinedButtonColors(contentColor = Color(
+                                0xFF009688
+                            )
+                            )
+
+                        ) {
+                            Text("Resetar Banco de Questões")
+                        }
+                    }
+                }
+            ) { paddingValues ->
+                // O conteúdo centralizado vai aqui dentro
+                Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 32.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                        .fillMaxSize()
+                        .padding(paddingValues), // Respeita o espaço do botão lá embaixo
+                    contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        "Simulador de Provas",
-                        fontSize = 28.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
-                    )
-
-                    Spacer(modifier = Modifier.height(48.dp))
-
-                    Button(
-                        onClick = { onFilePickerClick() },
-                        modifier = Modifier.fillMaxWidth().height(56.dp),
-                        shape = RoundedCornerShape(12.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00FFBC))
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 32.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text("Carregar Questões", color = Color.Black, fontWeight = FontWeight.SemiBold)
-                    }
+                        Text(
+                            "Simulador de Provas",
+                            fontSize = 28.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(48.dp))
 
-                    Button(
-                        onClick = {
-                            if (questoes.isNotEmpty()) {
-                                showQuestions = true
-                            }
-                        },
-                        modifier = Modifier.fillMaxWidth().height(56.dp),
-                        shape = RoundedCornerShape(12.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2196F3))
-                    ) {
-                        Text("Iniciar Simulado", color = Color.White, fontWeight = FontWeight.SemiBold)
-                    }
+                        Button(
+                            onClick = {
+                                if (questoes.isNotEmpty()) {
+                                    val primeiroPendente = questoes.indexOfFirst { it.respostaDada == null }
+                                    currentQuestionIndex = if (primeiroPendente != -1) primeiroPendente else 0
+                                    showQuestions = true
+                                }
+                            },
+                            modifier = Modifier.fillMaxWidth().height(56.dp),
+                            shape = RoundedCornerShape(12.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2196F3))
+                        ) {
+                            Text("Iniciar Simulado", color = Color.White, fontWeight = FontWeight.SemiBold)
+                        }
 
-                    Spacer(modifier = Modifier.height(32.dp))
+                        Spacer(modifier = Modifier.height(32.dp))
 
-                    OutlinedButton(
-                        onClick = {
-                            val dbHelper = DatabaseHelper(context)
-                            dbHelper.limparQuestoes()
-
-                            // Limpeza da interface
-                            questoes.clear()
-                            selectedAnswers = emptyMap()
-                            answeredQuestions = emptySet()
-
-                            android.widget.Toast.makeText(
-                                context,
-                                "Base de questões apagada com sucesso!",
-                                android.widget.Toast.LENGTH_SHORT
-                            ).show()
-                        },
-                        modifier = Modifier.fillMaxWidth().height(56.dp),
-                        shape = RoundedCornerShape(12.dp),
-                        border = BorderStroke(1.5.dp, Color(0xFFF44336).copy(alpha = 0.7f)),
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Color(0xFFF44336))
-                    ) {
-                        Text("Resetar Banco de Questões")
+                        Button(
+                            onClick = { onFilePickerClick() },
+                            modifier = Modifier.fillMaxWidth().height(56.dp),
+                            shape = RoundedCornerShape(12.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2196F3))
+                        ) {
+                            Text("Carregar Questões", color = Color.White, fontWeight = FontWeight.SemiBold)
+                        }
                     }
                 }
             }

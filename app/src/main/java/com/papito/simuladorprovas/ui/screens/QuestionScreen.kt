@@ -1,5 +1,6 @@
 package com.papito.simuladorprovas.ui.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -19,6 +20,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.papito.simuladorprovas.model.Question
 import com.papito.simuladorprovas.ui.components.OptionCard
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.pointer.positionChange
+import kotlin.math.abs // Para a função abs() de distância
 
 @Composable
 fun QuestionScreen(
@@ -40,12 +52,50 @@ fun QuestionScreen(
     }
     val errorCount = answeredQuestions.size - correctCount
 
+    var offsetX by remember { mutableFloatStateOf(0f) }
+    var offsetY by remember { mutableFloatStateOf(0f) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)
             .padding(16.dp)
-    ) {
+            .pointerInput(Unit) {
+                // Usamos o Initial para "espiar" o toque antes dos botões
+                awaitEachGesture {
+                    val down = awaitFirstDown(pass = PointerEventPass.Initial)
+                    var dragged = false
+
+                    do {
+                        val event = awaitPointerEvent(pass = PointerEventPass.Initial)
+                        val dragChange = event.changes.firstOrNull()
+
+                        if (dragChange != null && dragChange.pressed) {
+                            // Acumulamos o movimento
+                            offsetX += dragChange.positionChange().x
+                            offsetY += dragChange.positionChange().y
+
+                            // Se moveu mais de 10 pixels, consideramos um arrasto e não um clique
+                            if (abs(offsetX) > 10 || abs(offsetY) > 10) {
+                                dragged = true
+                            }
+                        }
+                    } while (event.changes.any { it.pressed })
+
+                    // Ao soltar o dedo (onDragEnd manual)
+                    if (dragged) {
+                        if (offsetX < -160) onNext()
+                        else if (offsetX > 160) onPrevious()
+                        else if (offsetY < -250) onFinalizar()
+                    }
+
+                    // Reseta para o próximo toque
+                    offsetX = 0f
+                    offsetY = 0f
+                }
+            }
+    )
+    {
         // --- HEADER COM SLIDER E CONTADORES ---
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -137,11 +187,24 @@ fun QuestionScreen(
             Button(
                 onClick = onPrevious,
                 enabled = currentIndex > 0,
-                shape = RoundedCornerShape(50.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray),
-                modifier = Modifier.width(120.dp)
+                modifier = Modifier
+                    .height(56.dp),
+                shape = RoundedCornerShape(12.dp),
+                border = BorderStroke(1.dp, Color.White),
+                colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray)
             ) {
                 Text("Voltar", color = Color.White)
+            }
+
+            OutlinedButton(
+                onClick = {onFinalizar()},
+                modifier = Modifier
+                    .height(56.dp),
+                shape = RoundedCornerShape(12.dp),
+                border = BorderStroke(1.dp, Color.White),
+                colors = ButtonDefaults.outlinedButtonColors(containerColor = Color(0xFF009688))
+            ) {
+                Text("Pausa",color = Color.White)
             }
 
             Button(
@@ -154,9 +217,11 @@ fun QuestionScreen(
                         onNext()
                     }
                 },
-                shape = RoundedCornerShape(50.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray),
-                modifier = Modifier.width(120.dp)
+                modifier = Modifier
+                    .height(56.dp),
+                shape = RoundedCornerShape(12.dp),
+                border = BorderStroke(1.dp, Color.White),
+                colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray)
             ) {
                 Text(
                     text = if (currentIndex == questoes.size - 1) "Finalizar" else "Próxima",

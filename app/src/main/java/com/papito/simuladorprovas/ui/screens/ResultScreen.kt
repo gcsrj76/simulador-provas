@@ -115,12 +115,12 @@ fun ResultScreen(
                         .fillMaxWidth()
                         .height(56.dp),
                     shape = RoundedCornerShape(12.dp),
-                    border = BorderStroke(1.dp, Color(0xFFF44336)), // Vermelho mais elegante
+                    border = BorderStroke(1.dp, Color(0xFF009688)), // Vermelho mais elegante
                     colors = ButtonDefaults.outlinedButtonColors(
-                        contentColor = Color(0xFFF44336)
+                        contentColor = Color(0xFF009688)
                     )
                 ) {
-                    Text("Apagar Respostas e Reiniciar", fontSize = 16.sp)
+                    Text("Reiniciar a Avaliação", fontSize = 16.sp)
                 }
             }
         }
