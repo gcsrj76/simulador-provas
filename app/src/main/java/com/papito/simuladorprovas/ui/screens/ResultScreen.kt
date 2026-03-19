@@ -3,6 +3,7 @@ package com.papito.simuladorprovas.ui.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -18,8 +19,8 @@ import com.papito.simuladorprovas.model.Question
 fun ResultScreen(
     questoes: SnapshotStateList<Question>,
     selectedAnswers: Map<Int, String>,
-    answeredQuestions: Set<Int>,
-    onRestart: () -> Unit
+    onVoltarMenu: () -> Unit,           // Apenas volta para a tela inicial
+    onReiniciarSimulado: () -> Unit     // Limpa respostas e volta para o início do quiz
 ) {
     val totalProva = questoes.size
     val correctAnswers = selectedAnswers.count { (questionId, answer) ->
@@ -82,21 +83,45 @@ fun ResultScreen(
             }
 
             Spacer(modifier = Modifier.height(48.dp))
-
-            Button(
-                onClick = onRestart,
-                shape = RoundedCornerShape(50.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2196F3)),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp)
+            Column(
+                modifier = Modifier.padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    "Voltar ao Início",
-                    color = Color.White,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold
-                )
+                // Botão de Ação Principal (Voltar ao Menu)
+                Button(
+                    onClick = onVoltarMenu,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp), // Altura padrão Material Design
+                    shape = RoundedCornerShape(12.dp), // Bordas levemente arredondadas, não pílula
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF2196F3) // Azul mais moderno
+                    )
+                ) {
+                    Text(
+                        "Voltar ao Menu Inicial",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Botão de Ação de Limpeza (Reiniciar)
+                // Usamos OutlinedButton para indicar que é uma ação secundária/destrutiva
+                OutlinedButton(
+                    onClick = onReiniciarSimulado,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    border = BorderStroke(1.dp, Color(0xFFF44336)), // Vermelho mais elegante
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = Color(0xFFF44336)
+                    )
+                ) {
+                    Text("Apagar Respostas e Reiniciar", fontSize = 16.sp)
+                }
             }
         }
     }

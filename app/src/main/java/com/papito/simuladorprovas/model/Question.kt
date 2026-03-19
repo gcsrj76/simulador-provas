@@ -8,5 +8,6 @@ data class Question(
     val opcaoC: String,
     val opcaoD: String,
     val correta: String,
-    val textoReferencia: String? = null
+    val textoReferencia: String? = null,
+    var respostaDada: String? = null // Adicione este campo
 )

@@ -29,6 +29,7 @@ fun QuestionScreen(
     onAnswerSelected: (Int, String) -> Unit,
     onNext: () -> Unit,
     onPrevious: () -> Unit,
+    onFinalizar: () -> Unit,
     onQuestionSelect: (Int) -> Unit
 ) {
     val currentQuestion = questoes[currentIndex]
@@ -144,7 +145,15 @@ fun QuestionScreen(
             }
 
             Button(
-                onClick = onNext,
+                onClick = {
+                    if (currentIndex == questoes.size - 1) {
+                        // Se for a última questão, chama a função de finalizar (que grava no banco)
+                        onFinalizar()
+                    } else {
+                        // Se não for a última, apenas navega para a próxima (sem gravar)
+                        onNext()
+                    }
+                },
                 shape = RoundedCornerShape(50.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray),
                 modifier = Modifier.width(120.dp)

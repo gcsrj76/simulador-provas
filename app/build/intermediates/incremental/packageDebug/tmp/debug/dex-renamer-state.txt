@@ -1,4 +1,4 @@
-#Wed Mar 18 17:12:40 BRT 2026
+#Thu Mar 19 00:10:24 UTC 2026
 base.0=/home/palinux/projetos/simulador-provas/app/build/intermediates/dex/debug/mergeExtDexDebug/classes.dex
 base.1=/home/palinux/projetos/simulador-provas/app/build/intermediates/dex/debug/mergeProjectDexDebug/0/classes.dex
 base.2=/home/palinux/projetos/simulador-provas/app/build/intermediates/dex/debug/mergeProjectDexDebug/5/classes.dex

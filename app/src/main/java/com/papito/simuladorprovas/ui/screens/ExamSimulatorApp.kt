@@ -2,6 +2,8 @@ package com.papito.simuladorprovas.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -13,8 +15,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.papito.simuladorprovas.data.DatabaseHelper
 import com.papito.simuladorprovas.model.Question
-import java.util.HashMap
-import java.util.HashSet
 
 @Composable
 fun ExamSimulatorApp(
@@ -22,13 +22,20 @@ fun ExamSimulatorApp(
     onFilePickerClick: () -> Unit
 ) {
     var currentQuestionIndex by remember { mutableStateOf(0) }
-    var selectedAnswers by remember { mutableStateOf<Map<Int, String>>(HashMap()) }
-    var answeredQuestions by remember { mutableStateOf<Set<Int>>(HashSet()) }
+
+    // Removida a dependência excessiva do remember para evitar travamento de estado
+    val respostasIniciais = questoes.filter { it.respostaDada != null }
+        .associate { it.id to it.respostaDada!! }
+
+    var selectedAnswers by remember(questoes.size) { mutableStateOf(respostasIniciais) }
+    var answeredQuestions by remember(questoes.size) { mutableStateOf(respostasIniciais.keys.toSet()) }
+
     var showResult by remember { mutableStateOf(false) }
     var showQuestions by remember { mutableStateOf(false) }
     val context = androidx.compose.ui.platform.LocalContext.current
 
     when {
+        // --- TELA INICIAL ---
         !showQuestions && !showResult -> {
             Box(
                 modifier = Modifier
@@ -36,61 +43,75 @@ fun ExamSimulatorApp(
                     .background(Color.Black),
                 contentAlignment = Alignment.Center
             ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 32.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     Text(
                         "Simulador de Provas",
-                        fontSize = 24.sp,
+                        fontSize = 28.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
                     )
-                    
-                    Spacer(modifier = Modifier.height(32.dp))
-                    
-                    Button(
-                        onClick = { onFilePickerClick() },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00FFBC))
-                    ) {
-                        Text("Carregar Questões", color = Color.White)
-                    }
-                    
-                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Spacer(modifier = Modifier.height(48.dp))
 
                     Button(
-                        onClick = { 
-                            if (questoes.isEmpty()) {
-                                questoes.addAll(
-                                    listOf(
-                                        Question(1, "O que é Kotlin?", "Uma linguagem", "Banco de dados", "SO", "Browser", "a"),
-                                        Question(2, "O que é Android?", "Framework", "SO Móvel", "Banco", "Linguagem", "b")
-                                    )
-                                )
-                            }
-                            showQuestions = true
-                        },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2196F3))
+                        onClick = { onFilePickerClick() },
+                        modifier = Modifier.fillMaxWidth().height(56.dp),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00FFBC))
                     ) {
-                        Text("Iniciar Simulado", color = Color.White)
+                        Text("Carregar Questões", color = Color.Black, fontWeight = FontWeight.SemiBold)
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Button(
                         onClick = {
+                            if (questoes.isNotEmpty()) {
+                                showQuestions = true
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth().height(56.dp),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2196F3))
+                    ) {
+                        Text("Iniciar Simulado", color = Color.White, fontWeight = FontWeight.SemiBold)
+                    }
+
+                    Spacer(modifier = Modifier.height(32.dp))
+
+                    OutlinedButton(
+                        onClick = {
                             val dbHelper = DatabaseHelper(context)
                             dbHelper.limparQuestoes()
 
-                            // Limpa a lista da memória para a tela atualizar na hora!
+                            // Limpeza da interface
                             questoes.clear()
+                            selectedAnswers = emptyMap()
+                            answeredQuestions = emptySet()
 
-                            android.widget.Toast.makeText(context, "Banco limpo com sucesso!", android.widget.Toast.LENGTH_SHORT).show()
+                            android.widget.Toast.makeText(
+                                context,
+                                "Base de questões apagada com sucesso!",
+                                android.widget.Toast.LENGTH_SHORT
+                            ).show()
                         },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF64235))
+                        modifier = Modifier.fillMaxWidth().height(56.dp),
+                        shape = RoundedCornerShape(12.dp),
+                        border = BorderStroke(1.5.dp, Color(0xFFF44336).copy(alpha = 0.7f)),
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Color(0xFFF44336))
                     ) {
-                        Text("Limpar Questões", color = Color.White)
+                        Text("Resetar Banco de Questões")
                     }
                 }
             }
-        }
+        } // Fim do bloco Menu Inicial
+
+        // --- TELA DE QUESTÕES ---
         showQuestions && !showResult -> {
             QuestionScreen(
                 questoes = questoes,
@@ -98,36 +119,43 @@ fun ExamSimulatorApp(
                 selectedAnswers = selectedAnswers,
                 answeredQuestions = answeredQuestions,
                 onAnswerSelected = { questionId, answer ->
-                    if (!answeredQuestions.contains(questionId)) {
-                        selectedAnswers = selectedAnswers + (questionId to answer)
-                        answeredQuestions = answeredQuestions + questionId
-                    }
+                    selectedAnswers = selectedAnswers + (questionId to answer)
+                    answeredQuestions = answeredQuestions + questionId
                 },
                 onNext = {
-                    if (currentQuestionIndex < questoes.size - 1) {
-                        currentQuestionIndex++
-                    } else {
-                        showResult = true
-                        showQuestions = false
-                    }
+                    if (currentQuestionIndex < questoes.size - 1) currentQuestionIndex++
                 },
                 onPrevious = { if (currentQuestionIndex > 0) currentQuestionIndex-- },
+                onFinalizar = {
+                    val dbHelper = DatabaseHelper(context)
+                    dbHelper.salvarTodasAsRespostas(selectedAnswers)
+                    showResult = true
+                    showQuestions = false
+                },
                 onQuestionSelect = { index -> currentQuestionIndex = index }
             )
-        }
+        } // Fim do bloco QuestionScreen
+
+        // --- TELA DE RESULTADO ---
         showResult -> {
             ResultScreen(
                 questoes = questoes,
                 selectedAnswers = selectedAnswers,
-                answeredQuestions = answeredQuestions,
-                onRestart = {
-                    selectedAnswers = HashMap()
-                    answeredQuestions = HashSet()
+                onVoltarMenu = {
+                    showResult = false
+                    showQuestions = false
+                    currentQuestionIndex = 0
+                },
+                onReiniciarSimulado = {
+                    val dbHelper = DatabaseHelper(context)
+                    dbHelper.limparApenasRespostas()
+                    selectedAnswers = emptyMap()
+                    answeredQuestions = emptySet()
                     showResult = false
                     showQuestions = false
                     currentQuestionIndex = 0
                 }
             )
-        }
-    }
-}
+        } // Fim do bloco ResultScreen
+    } // Fim do When
+} // Fim da Composable

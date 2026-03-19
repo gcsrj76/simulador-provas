@@ -20,7 +20,8 @@ class DatabaseHelper(private val context: Context) : SQLiteOpenHelper(context, "
                 opcao_c TEXT NOT NULL,
                 opcao_d TEXT NOT NULL,
                 correta TEXT NOT NULL,
-                texto_referencia TEXT
+                texto_referencia TEXT,
+                resposta_dada TEXT
             )
         """.trimIndent()
         db.execSQL(createTable)
@@ -49,6 +50,38 @@ class DatabaseHelper(private val context: Context) : SQLiteOpenHelper(context, "
         db.execSQL("DELETE FROM questoes")
         // Reseta o contador para a próxima questão ser a número 1
         db.execSQL("DELETE FROM sqlite_sequence WHERE name='questoes'")
+    }
+
+    // Função para salvar o progresso do usuário
+    fun salvarProgresso(idQuestao: Int, resposta: String?) {
+        val db = this.writableDatabase
+        val values = ContentValues().apply {
+            put("resposta_dada", resposta)
+        }
+        // Atualiza apenas a linha da questão específica
+        db.update("questoes", values, "id = ?", arrayOf(idQuestao.toString()))
+    }
+
+    fun salvarTodasAsRespostas(respostas: Map<Int, String>) {
+        val db = this.writableDatabase
+        db.beginTransaction() // Inicia transação para performance
+        try {
+            respostas.forEach { (id, resposta) ->
+                val values = ContentValues().apply {
+                    put("resposta_dada", resposta)
+                }
+                db.update("questoes", values, "id = ?", arrayOf(id.toString()))
+            }
+            db.setTransactionSuccessful()
+        } finally {
+            db.endTransaction()
+        }
+    }
+
+    // Caso queira resetar o simulado mantendo as perguntas
+    fun limparApenasRespostas() {
+        val db = this.writableDatabase
+        db.execSQL("UPDATE questoes SET resposta_dada = NULL")
     }
 
     fun importarQuestoesDB(uri: android.net.Uri) {
