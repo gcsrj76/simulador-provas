@@ -47,14 +47,14 @@ class MainActivity : ComponentActivity() {
 
                         // Usamos ?: "" para garantir que, se o banco trouxer null,
                         // o Kotlin receba uma String vazia e não quebre.
-                        pergunta = cursor.getString(1) ?: "",
-                        opcaoA = cursor.getString(2) ?: "",
-                        opcaoB = cursor.getString(3) ?: "",
-                        opcaoC = cursor.getString(4) ?: "",
-                        opcaoD = cursor.getString(5) ?: "",
-                        correta = cursor.getString(6) ?: "",
-                        textoReferencia = cursor.getString(7) ?: "",
-                        respostaDada = cursor.getString(8) ?: ""
+                        pergunta = cursor.getString(1),
+                        opcaoA = cursor.getString(2),
+                        opcaoB = cursor.getString(3),
+                        opcaoC = cursor.getString(4),
+                        opcaoD = cursor.getString(5),
+                        correta = cursor.getString(6),
+                        textoReferencia = cursor.getString(7),
+                        respostaDada = cursor.getString(8)
                     )
                 )
             }
